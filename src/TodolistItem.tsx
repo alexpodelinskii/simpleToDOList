@@ -10,6 +10,7 @@ type PropsType = {
     deleteTask: (taskId: TaskType['id']) => void
     changeFilter: (status: FilterValuesType) => void
     addTask: (newTask: TaskType) => void
+    changeTaskStatus:(taskId: TaskType['id'])=> void
 }
 
 
@@ -19,7 +20,8 @@ const TodolistItem = (
         tasks,
         deleteTask,
         changeFilter,
-        addTask
+        addTask,
+        changeTaskStatus
     }: PropsType) => {
 
     const taskList = tasks.length === 0
@@ -35,7 +37,9 @@ const TodolistItem = (
                         <li key={ind}>
                             <input
                                 type="checkbox"
-                                checked={task.isDone}/>
+                                checked={task.isDone}
+                                onChange={()=>changeTaskStatus(task.id)}
+                            />
                             <span>{task.title}
                                 <Button
                                     title={'X'}
