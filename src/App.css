@@ -6,3 +6,11 @@
 .app > div {
   margin-right: 50px;
 }
+
+.task{
+    font-weight: bold;
+}
+.task-done{
+    opacity: 0.5;
+    text-decoration: line-through;
+}

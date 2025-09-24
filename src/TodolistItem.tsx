@@ -10,7 +10,7 @@ type PropsType = {
     deleteTask: (taskId: TaskType['id']) => void
     changeFilter: (status: FilterValuesType) => void
     addTask: (newTask: TaskType) => void
-    changeTaskStatus:(taskId: TaskType['id'])=> void
+    changeTaskStatus: (taskId: TaskType['id'], newTaskStatus: TaskType['isDone']) => void
 }
 
 
@@ -31,14 +31,14 @@ const TodolistItem = (
             {
 
                 tasks.map((task, ind) => {
-
+                    const changeTaskStatusHandler = (event: ChangeEvent<HTMLInputElement>) => changeTaskStatus(task.id, event.currentTarget.checked)
                     return (
 
-                        <li key={ind}>
+                        <li key={ind} className={task.isDone?'task-done':'task'}>
                             <input
                                 type="checkbox"
                                 checked={task.isDone}
-                                onChange={()=>changeTaskStatus(task.id)}
+                                onChange={changeTaskStatusHandler}
                             />
                             <span>{task.title}
                                 <Button
@@ -60,20 +60,26 @@ const TodolistItem = (
     }
 
     function addTaskHandler() {
-        const newTask: TaskType = {
-            id: v1(),
-            title: newTaskTitle,
-            isDone: false
+        const title = newTaskTitle.trim()
+        if (title.length > 3 && title.length <= 10) {
+            const newTask: TaskType = {
+                id: v1(),
+                title: title,
+                isDone: false
+            }
+            setNewTaskTitle('');
+            addTask(newTask);
+        } else {
+            setNewTaskTitle(title)
         }
-        setNewTaskTitle('');
-        addTask(newTask);
     }
 
-    function addTaskOnEnterHandler(event:KeyboardEvent<HTMLInputElement>) {
-        if( event.key==='Enter'&&newTaskTitle.length){
+    function addTaskOnEnterHandler(event: KeyboardEvent<HTMLInputElement>) {
+        if (event.key === 'Enter' && newTaskTitle.length >= 3 && newTaskTitle.trim().length <= 10) {
             addTaskHandler()
         }
     }
+
     return <div>
         <h3>{title}</h3>
         <div>
@@ -83,10 +89,10 @@ const TodolistItem = (
                 onKeyDown={addTaskOnEnterHandler}
             />
             <Button title={'+'} onClick={() => addTaskHandler()}
-                    disabled={newTaskTitle.length<3||newTaskTitle.length>10} />
+                    disabled={newTaskTitle.length < 3 || newTaskTitle.length > 10}/>
             <div>
-                {newTaskTitle.length<3&&'title must be more then 3 chars'}
-                {newTaskTitle.length>10&&'title must be less then 10 chars'}
+                {newTaskTitle.length < 3 && 'title must be more then 3 chars'}
+                {newTaskTitle.length > 10 && 'title must be less then 10 chars'}
             </div>
         </div>
         {taskList}

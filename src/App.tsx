@@ -52,10 +52,10 @@ function App() {
     const addTask = (newTask: TaskType) => {
         setTasks([newTask, ...tasks,])
     }
-    const changeTaskStatus = (taskId: TaskType['id'])=>{
+    const changeTaskStatus = (taskId: TaskType['id'], newStatus: TaskType['isDone'])=>{
         const newTasks = tasks.map((t=>{
             if(t.id===taskId){
-                t.isDone=!t.isDone
+                t.isDone=newStatus
             }
             return t;
         }))
