@@ -1,3 +1,7 @@
+button{
+    margin-left: 3px;
+}
+
 .app {
   padding: 30px;
   display: flex;
@@ -15,7 +19,7 @@
     text-decoration: line-through;
 }
 .filter-btn-active{
-    background-color: darkkhaki;
+    background-color: lightgreen;
     color: red;
     border: 2px solid darkgoldenrod;
     border-radius: 3px;
