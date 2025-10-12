@@ -2,6 +2,7 @@ import './App.css'
 import TodolistItem from "./TodolistItem.tsx";
 import {useState} from "react";
 import {v1} from "uuid";
+import CreateItemForm from "./createItemForm/CreateItemForm.tsx";
 
 const todoListId_1 = v1();
 const todoListId_2 = v1();
@@ -54,6 +55,21 @@ function App() {
         }
         setTasks(newTasks)
     }
+    const changeTaskTitle = (payload: {
+        taskId: TaskType['id'],
+        todoListId: TodoListTypes["id"],
+        title: TodoListTypes["title"]
+    }) => {
+        const {taskId, todoListId, title} = payload;
+
+        const newTasks = {
+            ...tasks,
+            [todoListId]: tasks[todoListId].map(
+                (t) => t.id === taskId ? {...t, title} : {...t})
+        }
+        setTasks(newTasks)
+    }
+
     const addTask = (newTask: TaskType, todoListId: TodoListTypes["id"]) => {
         setTasks({
             ...tasks,
@@ -98,6 +114,30 @@ function App() {
         setTasks(newTasks)
     }
 
+
+    const addTodoList = (title: string) => {
+        const newTodoList: TodoListTypes = {
+            id: v1(),
+            title,
+            filter: 'all'
+        }
+        setTodoLists([...todoLists, newTodoList]);
+        setTasks({...tasks, [newTodoList.id]: []})
+    }
+    const changeTodoListTitle = (payload:{title: string, id:TodoListTypes['id']}) => {
+        const {title, id} = payload;
+        setTodoLists(todoLists.map(tl=>tl.id===id?{...tl, title}:{...tl}));
+
+    }
+
+
+    function isTaskParamsOk(value: string) {
+        const trimmedValueLength = value.trim().length;
+        return trimmedValueLength >= 3 && trimmedValueLength < 10;
+    }
+
+
+
     const todoListsForRender = todoLists.map(tl => {
         return (<TodolistItem
             title={tl.title}
@@ -106,14 +146,18 @@ function App() {
             changeFilter={changeFilter}
             addTask={addTask}
             changeTaskStatus={changeTaskStatus}
+            changeTaskTitle={changeTaskTitle}
             filter={tl.filter}
             todoListId={tl.id}
             deleteTaskList={deleteTaskList}
             key={tl.id}
+            changeTodoListTitle={changeTodoListTitle}
         />)
     })
     return (
         <div className="app">
+            <CreateItemForm addItem={addTodoList} isOkValue={isTaskParamsOk}
+                            errorText={'todolist title must be more then 2 and less then 10 chars'}/>
             {todoListsForRender}
         </div>
     )

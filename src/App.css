@@ -25,3 +25,9 @@ button{
     border-radius: 3px;
 ;
 }
+
+.newValueInputError{
+    max-width: 200px;
+    font-size: 0.8rem;
+    color: red;
+}
