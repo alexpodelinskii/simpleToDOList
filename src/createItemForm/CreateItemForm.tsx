@@ -1,5 +1,8 @@
 import {ChangeEvent, KeyboardEvent, useState} from 'react';
-import Button from "../button/Buttons.tsx";
+import Button from '@mui/material/Button';
+import {TextField} from "@mui/material";
+
+
 
 type CreateItemFormPropsType = {
     addItem: (value:string) => void
@@ -33,16 +36,22 @@ const CreateItemForm = ({addItem, isOkValue, errorText}: CreateItemFormPropsType
     }
 
     return (<div>
-            <input
+
+            <TextField
+                label={'Enter a title'}
+                variant={'outlined'}
+                error={error}
+                helperText={error?errorText:''}
                 value={itemValue}
+                size={'small'}
                 onChange={inputOnChangeHandler}
                 onKeyDown={inputOnKeyDownHandler}
+                style={{'maxWidth':'200px'}}
             />
-            <Button title={'+'} onClick={buttonOnClickHandler}
-                    disabled={!isOkValue(itemValue)}/>
-            {error&&<div className={'newValueInputError'}>
-                {!isOkValue(itemValue) && errorText}
-            </div>}
+
+            <Button variant={'contained'} onClick={buttonOnClickHandler}
+                    disabled={!isOkValue(itemValue)}>+</Button>
+
         </div>
     );
 };

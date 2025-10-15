@@ -1,8 +1,21 @@
 import './App.css'
-import TodolistItem from "./TodolistItem.tsx";
+import TodolistItem from "./todolistItem/TodolistItem.tsx";
 import {useState} from "react";
 import {v1} from "uuid";
 import CreateItemForm from "./createItemForm/CreateItemForm.tsx";
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from '@mui/icons-material/Menu'
+import {Container, createTheme, CssBaseline, Grid, Paper, Switch, ThemeProvider} from "@mui/material";
+import {containerSx} from "./todolistItem/TodoListItem.styles.ts";
+import {NavButton} from "./NavButton.ts";
+
+type ThemeMode = 'dark' | 'light'
+
+
+
+
 
 const todoListId_1 = v1();
 const todoListId_2 = v1();
@@ -26,7 +39,19 @@ export type TodoListTypes = {
 }
 
 function App() {
+    const [themeMode, setThemeMode] = useState<ThemeMode>('light')
 
+    const theme = createTheme(({
+        palette: {
+            mode: themeMode,
+            primary: {
+                main: '#087EA4',
+            },
+        },
+    }))
+    const changeModehandler = () => {
+        setThemeMode(themeMode === 'light' ? 'dark' : 'light')
+    }
 
     const [todoLists, setTodoLists] = useState<TodoListTypes[]>([
         {id: todoListId_1, title: 'What to learn', filter: "all"},
@@ -124,9 +149,9 @@ function App() {
         setTodoLists([...todoLists, newTodoList]);
         setTasks({...tasks, [newTodoList.id]: []})
     }
-    const changeTodoListTitle = (payload:{title: string, id:TodoListTypes['id']}) => {
+    const changeTodoListTitle = (payload: { title: string, id: TodoListTypes['id'] }) => {
         const {title, id} = payload;
-        setTodoLists(todoLists.map(tl=>tl.id===id?{...tl, title}:{...tl}));
+        setTodoLists(todoLists.map(tl => tl.id === id ? {...tl, title} : {...tl}));
 
     }
 
@@ -137,29 +162,61 @@ function App() {
     }
 
 
-
     const todoListsForRender = todoLists.map(tl => {
-        return (<TodolistItem
-            title={tl.title}
-            tasks={getTasksForRender(tasks[tl.id], tl.filter)}
-            deleteTask={deleteTask}
-            changeFilter={changeFilter}
-            addTask={addTask}
-            changeTaskStatus={changeTaskStatus}
-            changeTaskTitle={changeTaskTitle}
-            filter={tl.filter}
-            todoListId={tl.id}
-            deleteTaskList={deleteTaskList}
-            key={tl.id}
-            changeTodoListTitle={changeTodoListTitle}
-        />)
+        return (
+            <Grid key={tl.id}>
+                <Paper sx={{'mb': '30px'}}>
+                    <TodolistItem
+                        title={tl.title}
+                        tasks={getTasksForRender(tasks[tl.id], tl.filter)}
+                        deleteTask={deleteTask}
+                        changeFilter={changeFilter}
+                        addTask={addTask}
+                        changeTaskStatus={changeTaskStatus}
+                        changeTaskTitle={changeTaskTitle}
+                        filter={tl.filter}
+                        todoListId={tl.id}
+                        deleteTaskList={deleteTaskList}
+                        key={tl.id}
+                        changeTodoListTitle={changeTodoListTitle}
+                    />
+                </Paper>
+
+            </Grid>
+        )
     })
     return (
-        <div className="app">
-            <CreateItemForm addItem={addTodoList} isOkValue={isTaskParamsOk}
-                            errorText={'todolist title must be more then 2 and less then 10 chars'}/>
-            {todoListsForRender}
-        </div>
+        <ThemeProvider theme={theme}>
+            <CssBaseline/>
+            <div className="app">
+                <AppBar position={'static'} sx={{'mb': '30px'}}>
+                    <Toolbar>
+                        <Container maxWidth={'lg'} sx={containerSx}>
+                            <IconButton color={'inherit'}>
+                                <MenuIcon/>
+                            </IconButton>
+                            <div>
+                                <NavButton>Sign in</NavButton>
+                                <NavButton>Sign up</NavButton>
+                                <NavButton background={theme.palette.primary.dark}>Faq</NavButton>
+                                <Switch color={'default'} onChange={changeModehandler}/>
+                            </div>
+                        </Container>
+                    </Toolbar>
+                </AppBar>
+                <Container maxWidth={'lg'}>
+                    <Grid container sx={{'mb': '30px'}}>
+                        <CreateItemForm addItem={addTodoList} isOkValue={isTaskParamsOk}
+                                        errorText={'todolist title must be more then 2 and less then 10 chars'}/>
+                    </Grid>
+                    <Grid container spacing={4}>
+                        {todoListsForRender}
+                    </Grid>
+                </Container>
+
+
+            </div>
+        </ThemeProvider>
     )
 }
 

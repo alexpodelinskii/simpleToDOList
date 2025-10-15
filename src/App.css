@@ -1,19 +1,15 @@
-button{
-    margin-left: 3px;
-}
-
 .app {
-  padding: 30px;
-  display: flex;
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
 }
 
-.app > div {
-  margin-right: 50px;
+.container {
+    display: flex;
+    align-items: center;
 }
 
-.task{
-    font-weight: bold;
-}
+
 .task-done{
     opacity: 0.5;
     text-decoration: line-through;
