@@ -1,6 +1,5 @@
-import {FilterValuesType, TaskType, TodoListTypes} from "../App.tsx";
+import {FilterValuesType, TaskType, TodoListType} from "../App.tsx";
 import {ChangeEvent} from "react";
-import {v1} from "uuid";
 import CreateItemForm from "../createItemForm/CreateItemForm.tsx";
 import EditableSpan from "../editableSpan/EditableSpan.tsx";
 import IconButton from '@mui/material/IconButton'
@@ -13,19 +12,19 @@ import {containerSx, getListItemSx} from "./TodoListItem.styles.ts";
 type PropsType = {
     title: string
     tasks: TaskType[]
-    deleteTask: (taskId: TaskType['id'], todoListId: TodoListTypes["id"]) => void
-    changeFilter: (status: FilterValuesType, todoListId: TodoListTypes["id"]) => void
-    addTask: (newTask: TaskType, todoListId: TodoListTypes["id"]) => void
-    changeTaskStatus: (taskId: TaskType['id'], newTaskStatus: TaskType['isDone'], todoListId: TodoListTypes["id"]) => void
+    deleteTask: (taskId: TaskType['id'], todoListId: TodoListType["id"]) => void
+    changeFilter: (status: FilterValuesType, todoListId: TodoListType["id"]) => void
+    addTask: (title: TaskType["title"], todoListId: TodoListType["id"]) => void
+    changeTaskStatus: (taskId: TaskType['id'], newTaskStatus: TaskType['isDone'], todoListId: TodoListType["id"]) => void
     filter: FilterValuesType,
-    todoListId: TodoListTypes["id"]
-    deleteTaskList: (todoListId: TodoListTypes["id"]) => void
+    todoListId: TodoListType["id"]
+    deleteTaskList: (todoListId: TodoListType["id"]) => void
     changeTaskTitle: (payload: {
         taskId: TaskType['id'],
-        todoListId: TodoListTypes["id"],
-        title: TodoListTypes["title"]
+        todoListId: TodoListType["id"],
+        title: TodoListType["title"]
     }) => void
-    changeTodoListTitle: (payload: { title: string, id: TodoListTypes['id'] }) => void
+    changeTodoListTitle: (payload: { title: string, id: TodoListType['id'] }) => void
 }
 
 
@@ -88,12 +87,8 @@ const TodolistItem = (
 
     function addTaskHandler(title: string) {
 
-        const newTask: TaskType = {
-            id: v1(),
-            title: title,
-            isDone: false
-        }
-        addTask(newTask, todoListId);
+
+        addTask(title, todoListId);
 
     }
 

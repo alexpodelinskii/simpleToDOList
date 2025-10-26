@@ -1,6 +1,6 @@
 import './App.css'
 import TodolistItem from "./todolistItem/TodolistItem.tsx";
-import {useState} from "react";
+import {useReducer, useState} from "react";
 import {v1} from "uuid";
 import CreateItemForm from "./createItemForm/CreateItemForm.tsx";
 import AppBar from '@mui/material/AppBar'
@@ -10,11 +10,21 @@ import MenuIcon from '@mui/icons-material/Menu'
 import {Container, createTheme, CssBaseline, Grid, Paper, Switch, ThemeProvider} from "@mui/material";
 import {containerSx} from "./todolistItem/TodoListItem.styles.ts";
 import {NavButton} from "./NavButton.ts";
+import {
+    changeTodolistFilterAC, changeTodolistTitleAC,
+    createTodolistAC,
+    deleteTodolistAC,
+    todoListsReducer
+} from "./model/todolists-reducer.ts";
+import {
+    changeTaskStatusAC,
+    changeTaskTitleAC,
+    createTaskAC,
+    deleteTaskAC,
+    tasksReducer
+} from "./model/tasks-reducer.ts";
 
 type ThemeMode = 'dark' | 'light'
-
-
-
 
 
 const todoListId_1 = v1();
@@ -32,7 +42,7 @@ export type TasksState = {
 }
 export type FilterValuesType = 'all' | 'active' | 'complete';
 
-export type TodoListTypes = {
+export type TodoListType = {
     id: string,
     title: string,
     filter: FilterValuesType
@@ -49,16 +59,35 @@ function App() {
             },
         },
     }))
-    const changeModehandler = () => {
+    const changeModeHandler = () => {
         setThemeMode(themeMode === 'light' ? 'dark' : 'light')
     }
 
-    const [todoLists, setTodoLists] = useState<TodoListTypes[]>([
+    // const [todoLists, setTodoLists] = useState<TodoListType[]>([
+    //     {id: todoListId_1, title: 'What to learn', filter: "all"},
+    //     {id: todoListId_2, title: 'What to buy', filter: "all"}
+    // ])
+    const [todoLists, dispatchToTodoLists] = useReducer(todoListsReducer, [
         {id: todoListId_1, title: 'What to learn', filter: "all"},
         {id: todoListId_2, title: 'What to buy', filter: "all"}
     ])
 
-    const [tasks, setTasks] = useState<TasksState>({
+    // const [tasks, setTasks] = useState<TasksState>({
+    //     [todoListId_1]: [
+    //         {id: v1(), title: 'HTML&CSS', isDone: true},
+    //         {id: v1(), title: 'LS', isDone: true},
+    //         {id: v1(), title: 'React', isDone: false},
+    //     ],
+    //     [todoListId_2]: [
+    //         {id: v1(), title: 'Milk', isDone: true},
+    //         {id: v1(), title: 'Potato', isDone: true},
+    //         {id: v1(), title: 'Beer', isDone: false},
+    //         {id: v1(), title: 'Chaps', isDone: false},
+    //     ]
+    // })
+
+
+    const [tasks, dispatchToTasks] = useReducer(tasksReducer, {
         [todoListId_1]: [
             {id: v1(), title: 'HTML&CSS', isDone: true},
             {id: v1(), title: 'LS', isDone: true},
@@ -72,34 +101,22 @@ function App() {
         ]
     })
 
-    const deleteTask = (taskId: TaskType['id'], todoListId: TodoListTypes["id"]) => {
-        const newTasks = {
-            ...tasks,
-            [todoListId]: tasks[todoListId].filter(
-                (t) => t.id !== taskId)
-        }
-        setTasks(newTasks)
+
+    const deleteTask = (taskId: TaskType['id'], todolistId: TodoListType["id"]) => {
+        dispatchToTasks(deleteTaskAC({todolistId, taskId}))
     }
     const changeTaskTitle = (payload: {
         taskId: TaskType['id'],
-        todoListId: TodoListTypes["id"],
-        title: TodoListTypes["title"]
+        todoListId: TodoListType["id"],
+        title: TodoListType["title"]
     }) => {
         const {taskId, todoListId, title} = payload;
 
-        const newTasks = {
-            ...tasks,
-            [todoListId]: tasks[todoListId].map(
-                (t) => t.id === taskId ? {...t, title} : {...t})
-        }
-        setTasks(newTasks)
+        dispatchToTasks(changeTaskTitleAC({taskId, todoListId, title}))
     }
 
-    const addTask = (newTask: TaskType, todoListId: TodoListTypes["id"]) => {
-        setTasks({
-            ...tasks,
-            [todoListId]: [...tasks[todoListId], newTask]
-        })
+    const addTask = (title: TaskType["title"], todolistId: TodoListType["id"]) => {
+        dispatchToTasks(createTaskAC({title, todolistId}))
     }
 
     const getTasksForRender = (tasks: TaskType[], filter: FilterValuesType) => {
@@ -114,45 +131,27 @@ function App() {
 
     }
 
-    const changeFilter = (status: FilterValuesType, todoListId: TodoListTypes["id"]) => {
-        const newTodoLists = todoLists.map(tl => tl.id === todoListId ? {...tl, filter: status} : tl);
-        setTodoLists((newTodoLists));
-    }
 
-    const changeTaskStatus = (taskId: TaskType['id'], newStatus: TaskType['isDone'], todoListId: TodoListTypes["id"]) => {
-        const newTasks = {
-            ...tasks,
-            [todoListId]: tasks[todoListId].map(t => {
-                if (t.id === taskId) {
-                    t.isDone = newStatus
-                }
-                return t;
-            })
-        }
-
-        setTasks(newTasks);
-    }
-    const deleteTaskList = (todoListId: TodoListTypes["id"]) => {
-        setTodoLists(todoLists.filter(tl => tl.id !== todoListId))
-        const newTasks = {...tasks}
-        delete tasks[todoListId]
-        setTasks(newTasks)
+    const changeTaskStatus = (taskId: TaskType['id'], isDone: TaskType['isDone'], todolistId: TodoListType["id"]) => {
+        dispatchToTasks(changeTaskStatusAC({taskId,todolistId,isDone}))
     }
 
 
-    const addTodoList = (title: string) => {
-        const newTodoList: TodoListTypes = {
-            id: v1(),
-            title,
-            filter: 'all'
-        }
-        setTodoLists([...todoLists, newTodoList]);
-        setTasks({...tasks, [newTodoList.id]: []})
+    const deleteTodoList = (todoListId: TodoListType["id"]) => {
+        const action = deleteTodolistAC(todoListId);
+        dispatchToTodoLists(action);
+        dispatchToTasks(action);
     }
-    const changeTodoListTitle = (payload: { title: string, id: TodoListTypes['id'] }) => {
-        const {title, id} = payload;
-        setTodoLists(todoLists.map(tl => tl.id === id ? {...tl, title} : {...tl}));
-
+    const changeTodolistFilter = (filter: FilterValuesType, id: TodoListType["id"]) => {
+        dispatchToTodoLists(changeTodolistFilterAC({id, filter}))
+    }
+    const createTodoList = (title: TodoListType["title"]) => {
+        const action = createTodolistAC({title, id: v1()});
+        dispatchToTodoLists(action)
+        dispatchToTasks(action);
+    }
+    const changeTodoListTitle = (payload: { title: TodoListType["title"], id: TodoListType['id'] }) => {
+        dispatchToTodoLists(changeTodolistTitleAC(payload))
     }
 
 
@@ -170,13 +169,13 @@ function App() {
                         title={tl.title}
                         tasks={getTasksForRender(tasks[tl.id], tl.filter)}
                         deleteTask={deleteTask}
-                        changeFilter={changeFilter}
+                        changeFilter={changeTodolistFilter}
                         addTask={addTask}
                         changeTaskStatus={changeTaskStatus}
                         changeTaskTitle={changeTaskTitle}
                         filter={tl.filter}
                         todoListId={tl.id}
-                        deleteTaskList={deleteTaskList}
+                        deleteTaskList={deleteTodoList}
                         key={tl.id}
                         changeTodoListTitle={changeTodoListTitle}
                     />
@@ -199,14 +198,14 @@ function App() {
                                 <NavButton>Sign in</NavButton>
                                 <NavButton>Sign up</NavButton>
                                 <NavButton background={theme.palette.primary.dark}>Faq</NavButton>
-                                <Switch color={'default'} onChange={changeModehandler}/>
+                                <Switch color={'default'} onChange={changeModeHandler}/>
                             </div>
                         </Container>
                     </Toolbar>
                 </AppBar>
                 <Container maxWidth={'lg'}>
                     <Grid container sx={{'mb': '30px'}}>
-                        <CreateItemForm addItem={addTodoList} isOkValue={isTaskParamsOk}
+                        <CreateItemForm addItem={createTodoList} isOkValue={isTaskParamsOk}
                                         errorText={'todolist title must be more then 2 and less then 10 chars'}/>
                     </Grid>
                     <Grid container spacing={4}>
