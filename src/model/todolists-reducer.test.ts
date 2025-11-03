@@ -1,6 +1,6 @@
 import {v1} from 'uuid'
 import {beforeEach, expect, test} from 'vitest'
-import type {TodoListType} from '../App'
+import type {TodoListType} from '../app/App.tsx'
 import {
     changeTodolistFilterAC,
     changeTodolistTitleAC,
@@ -25,7 +25,7 @@ beforeEach(() => {
 
 test('correct todolist should be deleted', () => {
 
-    const endState = todoListsReducer(startState, deleteTodolistAC(todolistId1))
+    const endState = todoListsReducer(startState, deleteTodolistAC({id:todolistId1}))
 
     // 3. Проверка, что действие измененило state соответствующим образом
     // в массиве останется один тудулист
