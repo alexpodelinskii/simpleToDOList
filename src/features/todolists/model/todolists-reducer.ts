@@ -1,6 +1,14 @@
-import {TodoListType} from "../app/App.tsx";
+
 import {createAction, createReducer} from "@reduxjs/toolkit";
 import {v1} from "uuid";
+
+export type FilterValuesType = 'all' | 'active' | 'complete';
+
+export type TodoListType = {
+    id: string,
+    title: string,
+    filter: FilterValuesType
+}
 
 export const deleteTodolistAC = createAction<{ id: TodoListType["id"] }>('todolist/deleteTodolist')
 export const changeTodolistTitleAC = createAction<{

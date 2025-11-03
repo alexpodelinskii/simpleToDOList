@@ -1,10 +1,13 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit'
-import {tasksReducer} from '../model/tasks-reducer'
-import {todoListsReducer} from "../model/todolists-reducer.ts";
+import {appReducer} from "@/app/app-reducer.ts";
+import {tasksReducer} from "@/features/todolists/model/tasks-reducer.ts";
+import {todoListsReducer} from "@/features/todolists/model/todolists-reducer.ts";
+
 
 
 // объединение reducer'ов с помощью combineReducers
 const rootReducer = combineReducers({
+    app:appReducer,
     tasks: tasksReducer,
     todolists: todoListsReducer,
 })
