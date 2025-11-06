@@ -1,39 +1,39 @@
-import EditableSpan from "@/common/components/EditableSpan/EditableSpan.tsx";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-import {changeTodolistTitleAC, deleteTodolistAC, TodoListType} from "@/features/todolists/model/todolists-reducer.ts";
-import {useAppDispatch} from "@/common/hooks/useAppDispatch.ts";
+import {useAppDispatch} from '@/common/hooks/useAppDispatch'
+import {EditableSpan} from '@/common/components/EditableSpan/EditableSpan'
+import {
+  changeTodolistTitleAC,
+  deleteTodolistAC,
+  type Todolist
+} from '@/features/todolists/model/todolists-reducer'
+import DeleteIcon from '@mui/icons-material/Delete'
+import IconButton from '@mui/material/IconButton'
 import styles from './TodolistTitle.module.css'
 
-type  TodolistTitlePropsType = {
-    title: string
-    id: string
+type Props = {
+  todolist: Todolist
 }
 
-const TodolistTitle = ({title, id}: TodolistTitlePropsType) => {
+export const TodolistTitle = ({todolist}: Props) => {
+  const {id, title} = todolist
 
-    const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch()
 
-    const changeTodolistTileHandler = (title: string) => {
-        changeTodoListTitle({title, id})
-    }
-    const changeTodoListTitle = (payload: { title: TodoListType["title"], id: TodoListType['id'] }) => {
-        dispatch(changeTodolistTitleAC(payload))
-    }
-    const deleteTodoList = (todoListId: TodoListType["id"]) => {
-        dispatch(deleteTodolistAC({id: todoListId}));
-    }
-    return (
-        <div className={styles.container}>
-            <h3><EditableSpan value={title} changeValue={changeTodolistTileHandler}/>
-                <IconButton size={'small'} onClick={() => deleteTodoList(id)}>
-                    <DeleteIcon/>
-                </IconButton>
-            </h3>
-        </div>
+  const deleteTodolist = () => {
+    dispatch(deleteTodolistAC({id}))
+  }
 
+  const changeTodolistTitle = (title: string) => {
+    dispatch(changeTodolistTitleAC({id, title}))
+  }
 
-    );
-};
-
-export default TodolistTitle;
+  return (
+      <div className={styles.container}>
+        <h3>
+          <EditableSpan value={title} onChange={changeTodolistTitle}/>
+        </h3>
+        <IconButton onClick={deleteTodolist}>
+          <DeleteIcon/>
+        </IconButton>
+      </div>
+  )
+}

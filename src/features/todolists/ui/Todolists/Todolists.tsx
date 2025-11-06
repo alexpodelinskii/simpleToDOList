@@ -1,24 +1,21 @@
-import {Grid, Paper} from "@mui/material";
-import TodolistItem from "@/features/todolists/ui/Todolists/TodolistItem/TodolistItem.tsx";
-import {useAppSelector} from "@/common/hooks/useAppSelector.ts";
-import {selectTodolists} from "@/features/todolists/model/todolists-selectors.ts";
+import {useAppSelector} from '@/common/hooks/useAppSelector'
+import {selectTodolists} from '@/features/todolists/model/todolists-selectors'
+import {TodolistItem} from './TodolistItem/TodolistItem'
+import Grid from '@mui/material/Grid2'
+import Paper from '@mui/material/Paper'
 
-const Todolists = () => {
-    const todoLists = useAppSelector(selectTodolists);
+export const Todolists = () => {
+  const todolists = useAppSelector(selectTodolists)
 
-    return (
-        < >
-            {todoLists.map(tl => (
-                <Grid key={tl.id}>
-                    <Paper sx={{'mb': '30px'}}>
-                        <TodolistItem todolist={tl}/>
-                    </Paper>
-                </Grid>
-            ))}
-        </>
-
-    )
-
-};
-
-export default Todolists;
+  return (
+      <>
+        {todolists.map(todolist => (
+            <Grid key={todolist.id}>
+              <Paper sx={{p: '0 20px 20px 20px'}}>
+                <TodolistItem todolist={todolist}/>
+              </Paper>
+            </Grid>
+        ))}
+      </>
+  )
+}

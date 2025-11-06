@@ -1,38 +1,28 @@
-import CreateItemForm from "@/common/components/CreateItemForm/CreateItemForm.tsx";
-import {createTaskAC} from "@/features/todolists/model/tasks-reducer.ts";
-import {TodoListType} from "@/features/todolists/model/todolists-reducer.ts";
-import {useAppDispatch} from "@/common/hooks/useAppDispatch.ts";
-import TodolistTitle from "@/features/todolists/ui/Todolists/TodolistItem/TodolistTitle/TodolistTitle.tsx";
-import Tasks from "@/features/todolists/ui/Todolists/TodolistItem/Tasks/Tasks.tsx";
-import FilterButtons from "@/features/todolists/ui/Todolists/TodolistItem/FilterButtons/FilterButtons.tsx";
+import {useAppDispatch} from '@/common/hooks/useAppDispatch'
+import {FilterButtons} from './FilterButtons/FilterButtons'
+import {createTaskAC} from '@/features/todolists/model/tasks-reducer'
+import type {Todolist} from '@/features/todolists/model/todolists-reducer'
+import {Tasks} from './Tasks/Tasks'
+import {TodolistTitle} from './TodolistTitle/TodolistTitle'
+import {CreateItemForm} from '@/common/components/CreateItemForm/CreateItemForm'
 
-type PropsType = {
-    todolist: TodoListType
+type Props = {
+  todolist: Todolist
 }
 
-const TodolistItem = ({todolist}: PropsType) => {
+export const TodolistItem = ({todolist}: Props) => {
+  const dispatch = useAppDispatch()
 
-    const {title, id: todolistId, filter} = todolist;
+  const createTask = (title: string) => {
+    dispatch(createTaskAC({todolistId: todolist.id, title}))
+  }
 
-    const dispatch = useAppDispatch()
-
-    function addTaskHandler(title: string) {
-        dispatch(createTaskAC({title, todolistId}))
-    }
-
-    function isTaskParamsOk(value: string) {
-        const trimmedValueLength = value.trim().length;
-        return trimmedValueLength > 3 && trimmedValueLength < 10;
-    }
-
-    return <div>
-        <TodolistTitle title={title} id={todolistId}/>
-        <CreateItemForm addItem={addTaskHandler}
-                        isOkValue={isTaskParamsOk}
-                        errorText={'task title must be more then 3 and less then 10 chars'}/>
-        <Tasks todolistId={todolistId} filter={filter}/>
-        <FilterButtons todolistId={todolistId} filter={filter}/>
-    </div>
-};
-
-export default TodolistItem
+  return (
+      <div>
+        <TodolistTitle todolist={todolist}/>
+        <CreateItemForm onCreateItem={createTask}/>
+        <Tasks todolist={todolist}/>
+        <FilterButtons todolist={todolist}/>
+      </div>
+  )
+}

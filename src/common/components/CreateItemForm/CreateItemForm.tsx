@@ -1,59 +1,50 @@
-import {ChangeEvent, KeyboardEvent, useState} from 'react';
-import Button from '@mui/material/Button';
-import {TextField} from "@mui/material";
+import {type ChangeEvent, type KeyboardEvent, useState} from 'react'
+import TextField from '@mui/material/TextField'
+import AddBoxIcon from '@mui/icons-material/AddBox'
+import IconButton from '@mui/material/IconButton'
 
-
-
-type CreateItemFormPropsType = {
-    addItem: (value:string) => void
-    isOkValue: (value: string) => boolean
-    errorText: string
+type Props = {
+  onCreateItem: (title: string) => void
 }
 
+export const CreateItemForm = ({ onCreateItem }: Props) => {
+  const [title, setTitle] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
-const CreateItemForm = ({addItem, isOkValue, errorText}: CreateItemFormPropsType) => {
-
-    const [itemValue, setItemValue] = useState('')
-    const [error, setError]= useState(false)
-
-    function inputOnKeyDownHandler(event: KeyboardEvent<HTMLInputElement>) {
-        if (event.key === 'Enter' && isOkValue(itemValue)) {
-            setItemValue('')
-            addItem(itemValue)
-
-        }
+  const createItemHandler = () => {
+    const trimmedTitle = title.trim()
+    if (trimmedTitle !== '') {
+      onCreateItem(trimmedTitle)
+      setTitle('')
+    } else {
+      setError('Title is required')
     }
+  }
 
-    function inputOnChangeHandler(event: ChangeEvent<HTMLInputElement>) {
-        setItemValue(event.currentTarget.value)
-        setError(!isOkValue(event.currentTarget.value))
+  const changeTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.currentTarget.value)
+    setError(null)
+  }
+
+  const createItemOnEnterHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      createItemHandler()
     }
+  }
 
-    function buttonOnClickHandler (){
-        setItemValue('')
-        addItem(itemValue)
-
-    }
-
-    return (<div>
-
-            <TextField
-                label={'Enter a title'}
-                variant={'outlined'}
-                error={error}
-                helperText={error?errorText:''}
-                value={itemValue}
-                size={'small'}
-                onChange={inputOnChangeHandler}
-                onKeyDown={inputOnKeyDownHandler}
-                style={{'maxWidth':'200px'}}
-            />
-
-            <Button variant={'contained'} onClick={buttonOnClickHandler}
-                    disabled={!isOkValue(itemValue)}>+</Button>
-
-        </div>
-    );
-};
-
-export default CreateItemForm;
+  return (
+      <div>
+        <TextField label={'Enter a title'}
+                   variant={'outlined'}
+                   value={title}
+                   size={'small'}
+                   error={!!error}
+                   helperText={error}
+                   onChange={changeTitleHandler}
+                   onKeyDown={createItemOnEnterHandler}/>
+        <IconButton onClick={createItemHandler} color={'primary'}>
+          <AddBoxIcon />
+        </IconButton>
+      </div>
+  )
+}

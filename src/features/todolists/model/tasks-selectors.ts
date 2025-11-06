@@ -1,4 +1,4 @@
-import {RootState} from "../../../app/store.ts";
-import {TasksState} from "../../../app/App.tsx";
+import type {RootState} from '@/app/store'
+import type {TasksState} from './tasks-reducer'
 
-export const selectTasks = (state:RootState):TasksState => state.tasks
+export const selectTasks = (state: RootState): TasksState => state.tasks

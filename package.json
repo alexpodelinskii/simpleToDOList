@@ -1,5 +1,5 @@
 {
-  "name": "todolist-01",
+  "name": "todolist-11",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,35 +7,27 @@
     "dev": "vite --port 3000",
     "build": "tsc -b && vite build",
     "test": "vitest",
-    "preview": "vite preview",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.3.4",
-    "@mui/material": "^7.3.4",
-    "@reduxjs/toolkit": "^2.9.2",
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.0",
+    "@mui/icons-material": "6.3.1",
+    "@mui/material": "6.3.1",
+    "@reduxjs/toolkit": "2.5.0",
+    "axios": "^1.13.2",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "react-redux": "^9.2.0",
-    "uuid": "^13.0.0"
+    "react-redux": "9.2.0"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "4.1.1",
-    "@storybook/addon-a11y": "9.1.10",
-    "@storybook/addon-docs": "9.1.10",
-    "@storybook/addon-vitest": "9.1.10",
-    "@storybook/react-vite": "9.1.10",
-    "@types/node": "^24.10.0",
-    "@types/react": "19.0.2",
-    "@types/react-dom": "19.0.2",
+    "@types/node": "22.10.6",
+    "@types/react": "19.0.7",
+    "@types/react-dom": "19.0.3",
     "@vitejs/plugin-react-swc": "3.7.2",
     "globals": "15.14.0",
-    "storybook": "9.1.10",
-    "typescript": "5.7.2",
-    "vite": "6.0.6",
+    "typescript": "5.7.3",
+    "vite": "6.0.7",
     "vitest": "2.1.8"
   }
 }

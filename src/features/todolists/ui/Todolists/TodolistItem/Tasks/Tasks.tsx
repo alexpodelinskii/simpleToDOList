@@ -1,46 +1,38 @@
-import {TaskType} from "@/features/todolists/model/tasks-reducer.ts";
-import {FilterValuesType, TodoListType} from "@/features/todolists/model/todolists-reducer.ts";
-import {List} from "@mui/material";
-import {useAppSelector} from "@/common/hooks/useAppSelector";
-import {selectTasks} from "@/features/todolists/model/tasks-selectors";
-import TaskItem from "./TaskItem/TaskItem";
+import {useAppSelector} from '@/common/hooks/useAppSelector'
+import {selectTasks} from '@/features/todolists/model/tasks-selectors'
+import type {Todolist} from '@/features/todolists/model/todolists-reducer'
+import {TaskItem} from './TaskItem/TaskItem'
+import List from '@mui/material/List'
 
-type TasksPropsType = {
-    todolistId: TodoListType["id"]
-    filter: TodoListType["filter"]
+type Props = {
+  todolist: Todolist
 }
 
-const Tasks = ({todolistId, filter}: TasksPropsType) => {
+export const Tasks = ({todolist}: Props) => {
+  const {id, filter} = todolist
 
-    const tasksState = useAppSelector(selectTasks)
+  const tasks = useAppSelector(selectTasks)
 
-    const getTasksForRender = (tasks: TaskType[], filter: FilterValuesType) => {
+  const todolistTasks = tasks[id]
+  let filteredTasks = todolistTasks
+  if (filter === 'active') {
+    filteredTasks = todolistTasks.filter(task => !task.isDone)
+  }
+  if (filter === 'completed') {
+    filteredTasks = todolistTasks.filter(task => task.isDone)
+  }
 
-        if (filter === "active") {
-            return tasks.filter(task => !task.isDone);
-        }
-        if (filter === "complete") {
-            return tasks.filter(task => task.isDone);
-        }
-        return tasks
-    }
-    const tasks = getTasksForRender(tasksState[todolistId], filter)
-
-    return (
-        <>
-            {
-                tasks.length === 0
-                    ? <span>Your tasklist is empty</span>
-                    : <List>
-                        {
-                            tasks.map((task, ind) => (
-                                    <TaskItem task={task} key={ind} todolistId={todolistId}/>
-                                )
-                            )}
-                    </List>
-            }
-        </>
-    );
-};
-
-export default Tasks;
+  return (
+      <>
+        {filteredTasks.length === 0 ? (
+            <p>Тасок нет</p>
+        ) : (
+            <List>
+              {filteredTasks.map(task => (
+                  <TaskItem key={task.id} task={task} todolistId={id}/>
+              ))}
+            </List>
+        )}
+      </>
+  )
+}
