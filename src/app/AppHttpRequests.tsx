@@ -37,9 +37,9 @@ export const AppHttpRequests = () => {
     });
   };
 
-  const deleteTodolist = (id: string) => {
-    todolistsApi.deleteTodolist(id).then(() => {
-      setTodolists(todolists.filter((tl) => tl.id !== id));
+  const deleteTodolist = (payload: { id: string }) => {
+    todolistsApi.deleteTodolist(payload).then(() => {
+      setTodolists(todolists.filter((tl) => tl.id !== payload.id));
     });
   };
 
