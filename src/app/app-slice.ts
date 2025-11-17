@@ -22,12 +22,5 @@ export const appSlice = createSlice({
 export const appReducer = appSlice.reducer;
 export const { changeThemeModeAC } = appSlice.actions;
 export const { selectThemeMode } = appSlice.selectors;
-// export const changeThemeModeAC = createAction<{ themeMode: ThemeMode }>('app/changeThemeMode');
-//
-// export const appSlice = createReducer(initialState, (builder) => {
-//   builder.addCase(changeThemeModeAC, (state, action) => {
-//     state.themeMode = action.payload.themeMode;
-//   });
-// });
 
 export type ThemeMode = 'dark' | 'light';
