@@ -1,9 +1,9 @@
 import { beforeEach, expect, test } from 'vitest';
 import {
-  changeTaskStatusAC,
+  changeTaskStatusTC,
   changeTaskTitleAC,
   createTaskAC,
-  deleteTaskAC,
+  deleteTaskTC,
   tasksReducer,
   type TasksState,
 } from '../tasks-slice.ts';
@@ -27,7 +27,7 @@ beforeEach(() => {
 });
 
 test('correct task should be deleted', () => {
-  const endState = tasksReducer(startState, deleteTaskAC({ todolistId: 'todolistId2', taskId: '2' }));
+  const endState = tasksReducer(startState, deleteTaskTC({ todolistId: 'todolistId2', taskId: '2' }));
 
   expect(endState).toEqual({
     todolistId1: [
@@ -61,7 +61,7 @@ test('correct task should be created at correct array', () => {
 test('correct task should change its status', () => {
   const endState = tasksReducer(
     startState,
-    changeTaskStatusAC({ todolistId: 'todolistId2', taskId: '2', isDone: false })
+    changeTaskStatusTC({ todolistId: 'todolistId2', taskId: '2', isDone: false })
   );
 
   expect(endState.todolistId2[1].isDone).toBe(false);
